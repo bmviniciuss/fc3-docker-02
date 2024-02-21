@@ -20,7 +20,7 @@ async function main() {
   app.get('/', async (req, res) => {
     try {
       const name = faker.person.fullName()
-      await conn.query(`INSERT INTO people (name) VALUES ('${name}')`)
+      await conn.query(`INSERT INTO people (name) VALUES (${mysql.escape(name)})`)
       console.log(`Inserted "${name}" into database`)
       const dbRes = await conn.query(`SELECT name, created_at from people`)
       const names = (dbRes?.[0] ?? []).map(e => `<li>${e.name}</li>`).join("")
