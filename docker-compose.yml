@@ -41,6 +41,18 @@ services:
     networks:
       - fcnet
 
+  nginx:
+    depends_on:
+      - app
+    restart: always
+    container_name: nginx
+    build:
+        context: ./nginx
+    ports:
+        - "8080:80"
+    networks:
+      - fcnet
+
 volumes:
   db_data:
     driver: local
