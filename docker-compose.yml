@@ -1,0 +1,50 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql
+    container_name: db
+    command: --innodb-use-native-aio=0
+    restart: always
+    tty: true
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - fcnet
+
+  app:
+    depends_on:
+      - db
+    build:
+      context: node
+      dockerfile: Dockerfile.prod
+    container_name: app
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 60s docker-entrypoint.sh npm start
+    restart: always
+    tty: true
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_DATABASE: app
+    networks:
+      - fcnet
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  fcnet:
+    driver: bridge

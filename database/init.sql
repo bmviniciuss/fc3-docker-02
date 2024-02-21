@@ -1,0 +1,7 @@
+use app;
+
+CREATE TABLE IF NOT EXISTS people (
+  id INT AUTO_INCREMENT primary key,
+  name VARCHAR(255) NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

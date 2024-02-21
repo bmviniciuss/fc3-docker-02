@@ -12,7 +12,6 @@ async function main() {
     password: process.env?.DB_PASSWORD ?? "root",
     database: process.env?.DB_DATABASE ?? "app"
   }
-
   const conn = await mysql.createConnection(dbConfig);
   await conn.connect()
   console.log("Connected to database")
@@ -20,7 +19,9 @@ async function main() {
 
   app.get('/', async (req, res) => {
     try {
-      const cRes = await conn.query(`INSERT INTO people (name) VALUES ('${faker.person.fullName()}')`)
+      const name = faker.person.fullName()
+      await conn.query(`INSERT INTO people (name) VALUES ('${name}')`)
+      console.log(`Inserted "${name}" into database`)
       const dbRes = await conn.query(`SELECT name, created_at from people`)
       const names = (dbRes?.[0] ?? []).map(e => `<li>${e.name}</li>`).join("")
       return res
