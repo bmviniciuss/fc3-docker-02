@@ -23,13 +23,15 @@ services:
       - db
     build:
       context: node
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     container_name: app
-    entrypoint: dockerize -wait tcp://db:3306 -timeout 60s docker-entrypoint.sh npm start
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 60s sh -c "npm install && npm start"
     restart: always
     tty: true
     ports:
       - "3000:3000"
+    volumes:
+      - ./node:/usr/src/app
     environment:
       NODE_ENV: production
       PORT: 3000

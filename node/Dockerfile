@@ -1,8 +1,6 @@
 FROM node:20.11.1-alpine
 
-WORKDIR /app
-COPY . .
-RUN npm install --production
+WORKDIR /usr/src/app
 
 ENV DOCKERIZE_VERSION v0.7.0
 
@@ -12,7 +10,4 @@ RUN apk update --no-cache \
     && apk del wget
 
 EXPOSE 3000
-# CMD dockerize -wait tcp://db:3306 -timeout 60m npm start
-
-CMD ["node", "index.js"]
 
